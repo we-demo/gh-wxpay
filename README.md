@@ -4,30 +4,31 @@
 
 要求：前端页面、node后端、注册一个github-oauth应用、一个开通微信支付的公众号及商户信息。
 
-### 发起Github登录
+### 发起github登录
 
 ```js
-location.href = 'https://example.com/ghauth/invoke'
+location.href = 'https://example.com/gx/api/ghauth/invoke'
   + `?from=${encodeURIComponent(location.href)}`
 ```
 
 ### 获取用户信息及已付费的项目列表
 
 ```js
-let res = await fetch('https://example.com/ghauth/session')
+let res = await fetch('https://example.com/gx/api/ghauth/session')
 let { user, paid } = await res.json()
 ```
 
-### Server启动
+### 获取微信支付二维码并展示
 
-```plain
-PORT=8333 npm run dev
+```js
+let res = await fetch('https://example.com/gx/api/wxpay/order')
+let { code_url } = await res.json()
 ```
 
 ### 配置信息
 
 ```js
-// config.example.js => config.js
+// gx.conf.example.js
 let host_url = 'https://example.com/gx'
 let host_ip = '120.11.11.111'
 
@@ -35,14 +36,13 @@ module.exports = {
   gh: {
     client_id: 'xxxxxxxxxxxxxxxxxxxx',
     client_secret: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
-    callback_url: `${host_url}/ghauth/callback`
+    callback_url: `${host_url}/api/ghauth/callback`
   },
   wx: {
-    ghid: 'xxxxxxxxxxxxxxx', // 公众号原始ID
     appid: 'xxxxxxxxxxxxxxxxxx', // 公众号开发者ID
     mch_id: 'xxxxxxxxxx', // 商户号
     mch_key: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', // 商户key
-    notify_url: `${host_url}/wxpay/notify`, // 通知地址
+    notify_url: `${host_url}/api/wxpay/notify`, // 通知地址
     host_ip
   },
   app: {

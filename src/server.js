@@ -1,4 +1,4 @@
-let conf = require('../config')
+let conf = require('../gx.conf')
 let session = require('koa-session')
 let Router = require('koa-router')
 let Koa = require('koa')
