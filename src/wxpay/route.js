@@ -1,26 +1,21 @@
-let { handlePay } = require('../custom')
+let { handlePay, handleOrder } = require('../custom')
 let { createOrder } = require('./order')
 let xmlJs = require('./xml-js')
 let wxSign = require('./wxsign')
 let KoaBody = require('koa-body')
 let koaBody = KoaBody()
+let _ = require('lodash')
 
 module.exports = (router, conf) => {
-  router.post('/wxpay/order', async ctx => {
-    // todo: 根据product_id 下单
-    var params = {
-      body: '吮指原味鸡 * 1',
-      attach: '{"部位":"三角"}',
-      out_trade_no: 'kfc' + Date.now(),
-      total_fee: 1,
-      spbill_create_ip: conf.host_ip,
-      product_id: 'test-kfc',
-      trade_type: 'NATIVE'
-    }
-    let order = await createOrder(params, conf)
-    ctx.body = order
+  // 用户扫码 发起支付
+  router.get('/wxpay/order', async ctx => {
+    let params = await handleOrder(ctx, conf)
+    let res = await createOrder(params, conf)
+    // todo: 验证签名, return_code, result_code
+    ctx.body = _.pick(res, ['code_url'])
   })
-  
+
+  // 支付结果 异步通知
   router.post('/wxpay/notify', koaBody, async ctx => {
     let data
     try {
