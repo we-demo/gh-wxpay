@@ -24,11 +24,15 @@ module.exports = (router, conf) => {
 
       let expected = wxSign(res, conf.mch_key)
       if (res.sign !== expected) {
-        throw new Error('签名验证不通过 非法访问')
+        let err = new Error('签名验证不通过 非法访问')
+        err.code = 'WXERR_INVALID_SIGN'
+        err.status = 400
+        throw err
       }
-
       if (res.return_code !== 'SUCCESS') {
-        throw new Error(`return_msg: ${res.return_msg}`)
+        let err = new Error(`return_msg: ${res.return_msg}`)
+        err.code = `WXERR_RETURN_CODE_${res.return_code}`
+        throw err
       }
 
       await handlePay(res)

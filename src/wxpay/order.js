@@ -34,16 +34,31 @@ async function createOrder (data, conf) {
   params.sign = sign
 
   let xml = xmlJs.toXml('xml', params)
-  console.log('xml', xml)
   let res = await fetch(`${baseUrl}/unifiedorder`, {
     method: 'POST',
     body: xml
   })
   res = await res.text()
-  console.log('res', res)
   res = xmlJs.toJs(res).xml
-  if (res) {
-    // todo throw
+
+  let expected = wxSign(res, conf.mch_key)
+  if (res.sign !== expected) {
+    let err = new Error('签名验证不通过 非法访问')
+    err.code = 'WXERR_INVALID_SIGN'
+    err.status = 400
+    throw err
+  }
+  if (res.return_code !== 'SUCCESS') {
+    let err = new Error(`return_msg: ${res.return_msg}`)
+    err.code = `WXERR_RETURN_${res.return_code}`
+    throw err
+  }
+
+  if (res.result_code !== 'SUCCESS') {
+    let err = new Error(res.err_code_des)
+    err.code = `WXERR_RESULT_${res.err_code}`
+    err.status = 400
+    throw err
   }
   return res
 }

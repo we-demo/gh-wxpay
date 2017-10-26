@@ -10,6 +10,7 @@ module.exports = async (ctx, next) => {
       res.error = 'Internal Server Error'
     } else {
       res.error = err.message
+      if (err.code) res.code = err.code
 
       if (process.env.NODE_ENV === 'development') {
         res.stack = err.stack
