@@ -5,7 +5,7 @@ module.exports = {
   gh: {
     client_id: 'xxxxxxxxxxxxxxxxxxxx',
     client_secret: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
-    callback_url: `${host_url}/api/ghauth/callback`
+    callback_url: `${host_url}/api/oauth/callback`
   },
   wx: {
     appid: 'xxxxxxxxxxxxxxxxxx', // 公众号开发者ID

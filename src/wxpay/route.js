@@ -8,7 +8,7 @@ let _ = require('lodash')
 
 module.exports = (router, conf) => {
   // 用户扫码 发起支付
-  router.get('/wxpay/order', async ctx => {
+  router.get('/order', async ctx => {
     let params = await handleOrder(ctx, conf)
     let res = await createOrder(params, conf)
     // todo: 验证签名, return_code, result_code

@@ -7,21 +7,21 @@
 ### 发起github登录
 
 ```js
-location.href = 'https://example.com/gx/api/ghauth/invoke'
+location.href = 'https://example.com/gx/api/oauth/invoke'
   + `?from=${encodeURIComponent(location.href)}`
 ```
 
 ### 获取用户信息及已付费的项目列表
 
 ```js
-let res = await fetch('https://example.com/gx/api/ghauth/session')
+let res = await fetch('https://example.com/gx/api/session')
 let { user, paid } = await res.json()
 ```
 
 ### 获取微信支付二维码并展示
 
 ```js
-let res = await fetch('https://example.com/gx/api/wxpay/order')
+let res = await fetch('https://example.com/gx/api/order')
 let { code_url } = await res.json()
 ```
 
@@ -36,7 +36,7 @@ module.exports = {
   gh: {
     client_id: 'xxxxxxxxxxxxxxxxxxxx',
     client_secret: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
-    callback_url: `${host_url}/api/ghauth/callback`
+    callback_url: `${host_url}/api/oauth/callback`
   },
   wx: {
     appid: 'xxxxxxxxxxxxxxxxxx', // 公众号开发者ID
