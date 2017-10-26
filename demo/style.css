@@ -1,0 +1,6 @@
+.user-tab .view-tab {
+  display: none;
+}
+.user-tab .view-tab.active {
+  display: block;
+}
