@@ -3,7 +3,6 @@ let { createOrder } = require('./order')
 let xmlJs = require('./xml-js')
 let wxSign = require('./wxsign')
 let KoaBody = require('koa-body')
-let koaBody = KoaBody()
 let _ = require('lodash')
 
 module.exports = (router, conf) => {
@@ -16,11 +15,12 @@ module.exports = (router, conf) => {
   })
 
   // 支付结果 异步通知
-  router.post('/wxpay/notify', koaBody, async ctx => {
+  // res.text: https://github.com/dlau/koa-body/blob/master/test/index.js
+  router.post('/wxpay/notify', KoaBody({ multipart: true }), async ctx => {
     let data
     try {
-      let xml = ctx.request.body
-      let res = xmlJs.toJson(xml)
+      let xml = ctx.request.text
+      let res = xmlJs.toJs(xml)
 
       let expected = wxSign(res, conf.mch_key)
       if (res.sign !== expected) {
@@ -35,6 +35,7 @@ module.exports = (router, conf) => {
         throw err
       }
 
+      res = _.omit(res, ['nonce_str', 'sign', 'sign_type'])
       await handlePay(res)
       data = {
         return_code: 'SUCCESS'

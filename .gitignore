@@ -2,3 +2,4 @@ node_modules
 *.log
 yarn.lock
 gx.conf.js
+db.json

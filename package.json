@@ -2,7 +2,8 @@
   "name": "gh-wxpay",
   "main": "src/server",
   "scripts": {
-    "start": "node."
+    "dev": "nodemon . --ignore db.json --delay 5",
+    "start": "node ."
   },
   "dependencies": {
     "form-data": "^2.3.1",
@@ -12,6 +13,7 @@
     "koa-router": "^7.2.1",
     "koa-session": "^5.5.0",
     "lodash": "^4.17.4",
+    "lowdb": "^1.0.0",
     "node-fetch": "^1.7.3",
     "xml2json": "^0.11.0"
   }

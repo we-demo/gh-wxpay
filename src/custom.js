@@ -1,4 +1,5 @@
 let _ = require('lodash')
+let db = require('./db')
 
 exports.handleOrder = handleOrder
 exports.handlePay = handlePay
@@ -13,11 +14,11 @@ async function handleOrder (ctx, conf) {
   }
 
    // todo: 根据product_id 下单
-   let dateStr = new Date().toJSON().replace(/[\-:]|T.*/g, '')
+   let date_str = new Date().toJSON().replace(/[\-:]|T.*/g, '')
    var params = {
     body: '吮指原味鸡 * 1',
     attach: '{"部位":"三角"}',
-    out_trade_no: `${dateStr}-${user_id}-${product_id}`,
+    out_trade_no: `${date_str}-${user_id}-${product_id}`,
     total_fee: 1,
     spbill_create_ip: conf.host_ip,
     product_id: 'test-kfc',
@@ -27,18 +28,26 @@ async function handleOrder (ctx, conf) {
 }
 
 async function handlePay (res) {
-  // todo lowdb 写入支付结果数据
-  res.out_trade_no
-  res.total_fee
-  res.open_id
-  res.is_subscribe
+
+  let exists = db.get('orders').find(r => {
+    return r.pay_res.out_trade_no === res.out_trade_no
+  }).value()
+  if (exists) return
+
+  let record = {}
+  record.pay_res = res
+
+  let [date_str, user_id, product_id] = res.out_trade_no.spllit('-')
+  _.assign(record, { date_str, user_id, product_id })
 
   if (res.result_code !== 'SUCCESS') {
-
+    // noop
   } else {
-    res.err_code
-    res.err_code_des
+    // todo: 需要预插入订单 并校验返回的订单金额是否一致
+    // https://pay.weixin.qq.com/wiki/doc/api/native.php?chapter=9_7
+    // if (res.total_fee) {}
   }
+  db.get('orders').push(record).write()
 }
 
 async function getSession (ctx) {
