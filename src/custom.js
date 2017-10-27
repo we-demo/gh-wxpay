@@ -6,6 +6,7 @@ exports.handlePay = handlePay
 exports.getSession = getSession
 exports.handleLogin = handleLogin
 
+// todo: login/order的时候 保存users
 // todo: ratelimit ip安全限制等
 async function handleOrder (ctx, conf) {
   let { user_id, product_id } = ctx.query
@@ -13,22 +14,26 @@ async function handleOrder (ctx, conf) {
     return ctx.throw(400, '缺少参数')
   }
 
-   // todo: 根据product_id 下单
-   let date_str = new Date().toJSON().replace(/[\-:]|T.*/g, '')
-   var params = {
-    body: '吮指原味鸡 * 1',
-    attach: '{"部位":"三角"}',
+  let product = db.get('products').find({ id: product_id }).value()
+  if (!product) {
+    return ctx.throw(400, '商品不存在')
+  }
+
+  // todo: 根据product_id 下单
+  let date_str = new Date().toJSON().replace(/[\-:]|T.*/g, '') // 注 世界标准时间
+  var params = {
     out_trade_no: `${date_str}-${user_id}-${product_id}`,
-    total_fee: 1,
+    product_id,
+    body: product.body,
+    attach: product.attach,
+    total_fee: Math.ceil(product.price * 100), // 单位从'元'转成'分'
     spbill_create_ip: conf.host_ip,
-    product_id: 'test-kfc',
     trade_type: 'NATIVE'
   }
   return params
 }
 
 async function handlePay (res) {
-
   let exists = db.get('orders').find(r => {
     return r.pay_res.out_trade_no === res.out_trade_no
   }).value()

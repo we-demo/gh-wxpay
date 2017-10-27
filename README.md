@@ -7,7 +7,7 @@
 ### 发起github登录
 
 ```js
-location.href = 'https://example.com/gx/api/oauth/invoke'
+location.href = 'https://example.com/gx/api/login'
   + `?from=${encodeURIComponent(location.href)}`
 ```
 
