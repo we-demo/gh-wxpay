@@ -8,7 +8,13 @@ module.exports = {
     callback_url: `${host_url}/api/oauth/callback`
   },
   wx: {
-    appid: 'xxxxxxxxxxxxxxxxxx', // 公众号开发者ID
+    mps: [ // 公众号/小程序
+      {
+        oid: 'xxxxxxxxxxxxxxx', // 原始id
+        appid: 'xxxxxxxxxxxxxxxxxx', // 开发者id
+        secret: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx' // 秘钥
+      }
+    ],
     mch_id: 'xxxxxxxxxx', // 商户号
     mch_key: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', // 商户key
     notify_url: `${host_url}/api/wxpay/notify`, // 通知地址

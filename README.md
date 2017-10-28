@@ -14,15 +14,45 @@ location.href = 'https://example.com/gx/api/login'
 ### 获取用户信息及已付费的项目列表
 
 ```js
-let res = await fetch('https://example.com/gx/api/session')
-let { user, paid } = await res.json()
+let { error, user, paid } = await request({
+  url: 'https://example.com/gx/api/session'
+})
 ```
 
 ### 获取微信支付二维码并展示
 
 ```js
-let res = await fetch('https://example.com/gx/api/order')
-let { code_url } = await res.json()
+let { error, code_url } = await request({
+  url: 'https://example.com/gx/api/order',
+  query: {
+    product_id,
+    user_id,
+    appid
+  }
+})
+```
+
+### 小程序发起微信支付
+
+```js
+let { openid } = await request({
+  url: 'https://example.com/gx/api/wx/token',
+  query: {
+    code,
+    appid
+  }
+})
+
+let { error, prepay_id } = await request({
+  url: 'https://example.com/gx/api/order',
+  query: {
+    trade_type: 'JSAPI',
+    openid,
+    product_id,
+    user_id,
+    appid
+  }
+})
 ```
 
 ### 配置信息
@@ -39,7 +69,13 @@ module.exports = {
     callback_url: `${host_url}/api/oauth/callback`
   },
   wx: {
-    appid: 'xxxxxxxxxxxxxxxxxx', // 公众号开发者ID
+    mps: [ // 公众号/小程序
+      {
+        oid: 'xxxxxxxxxxxxxxx', // 原始id
+        appid: 'xxxxxxxxxxxxxxxxxx', // 开发者id
+        secret: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx' // 秘钥
+      }
+    ],
     mch_id: 'xxxxxxxxxx', // 商户号
     mch_key: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', // 商户key
     notify_url: `${host_url}/api/wxpay/notify`, // 通知地址
@@ -53,7 +89,10 @@ module.exports = {
 
 ### 参考资料
 
-- [API列表 - 微信支付](https://pay.weixin.qq.com/wiki/doc/api/native.php?chapter=9_1)
+- [API列表 - 微信支付平台](https://pay.weixin.qq.com/wiki/doc/api/native.php?chapter=9_1)
+- [wx.requestPayment - 微信公众平台 | 小程序](https://mp.weixin.qq.com/debug/wxadoc/dev/api/api-pay.html#wxrequestpaymentobject)
+- [网站应用微信登录开发指南 - 微信开放平台](https://open.weixin.qq.com/cgi-bin/showdocument?action=dir_list&t=resource/res_list&verify=1&id=open1419316505&token=&lang=zh_CN)
+- ~~[微信网页授权 - 微信公众平台](https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421140842)~~
 - [教程：教你如何用 React 实现 Github OAuth 验证](http://react-china.org/t/react-github-oauth/4986)
 - [使用 GitHub OAuth 第三方验证登录](https://zhuanlan.zhihu.com/p/26754921)
 - [Other Authentication Methods - Github](https://developer.github.com/v3/auth/)

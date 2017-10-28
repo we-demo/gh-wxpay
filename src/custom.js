@@ -19,21 +19,36 @@ async function handleOrder (ctx, conf) {
     return ctx.throw(400, '商品不存在')
   }
 
-  // todo: 根据product_id 下单
+  let { trade_type, openid, appid } = ctx.query
+  trade_type = trade_type || 'NATIVE'
+  if (trade_type !== 'NATIVE' && !openid) {
+    return ctx.throw(400, '缺少openid')
+  }
+
+  // todo 判断user是否已购买product
+
   let date_str = new Date().toJSON().replace(/[\-:]|T.*/g, '') // 注 世界标准时间
   var params = {
-    out_trade_no: `${date_str}-${user_id}-${product_id}`,
+    // github账号允许`-` 但不允许`--` 选作订单号分隔符
+    out_trade_no: `${date_str}--${user_id}--${product_id}`,
     product_id,
     body: product.body,
     attach: product.attach,
     total_fee: Math.ceil(product.price * 100), // 单位从'元'转成'分'
     spbill_create_ip: conf.host_ip,
-    trade_type: 'NATIVE'
+    appid,
+    openid,
+    trade_type
   }
+  if (product.attach) {
+    params.attach = product.attach
+  }
+  console.log('handleOrder', params)
   return params
 }
 
 async function handlePay (res) {
+  console.log('handlePay', res)
   let exists = db.get('orders').find(r => {
     return r.pay_res.out_trade_no === res.out_trade_no
   }).value()
@@ -42,7 +57,8 @@ async function handlePay (res) {
   let record = {}
   record.pay_res = res
 
-  let [date_str, user_id, product_id] = res.out_trade_no.spllit('-')
+   // github账号允许`-` 但不允许`--` 选作订单号分隔符
+  let [date_str, user_id, product_id] = res.out_trade_no.split('--')
   _.assign(record, { date_str, user_id, product_id })
 
   if (res.result_code !== 'SUCCESS') {
@@ -52,6 +68,7 @@ async function handlePay (res) {
     // https://pay.weixin.qq.com/wiki/doc/api/native.php?chapter=9_7
     // if (res.total_fee) {}
   }
+  console.log('insert record', record)
   db.get('orders').push(record).write()
 }
 

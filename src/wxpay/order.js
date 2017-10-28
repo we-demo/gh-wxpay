@@ -1,6 +1,7 @@
 let xmlJs = require('./xml-js')
 let wxSign = require('./wxsign')
 let fetch = require('node-fetch')
+let _ = require('lodash')
 let baseUrl = 'https://api.mch.weixin.qq.com/pay'
 
 exports.createOrder = createOrder
@@ -18,13 +19,14 @@ exports.createOrder = createOrder
  *   @param {String} device_info 设备号 PC网页或公众号内支付可以传"WEB"
  *   @param {String} product_id 商品ID trade_type=NATIVE时（即扫码支付），此参数必传
  *   @param {String} openid 用户标识 trade_type=JSAPI时（即公众号支付），此参数必传
+ *   @param {String} appid 微信支付分配的公众账号ID（企业号corpid即为此appId）
  * @return {Object} trade_type, prepay_id, code_url 有效期为2小时
  * @see https://pay.weixin.qq.com/wiki/doc/api/native.php?chapter=9_1
  */
 async function createOrder (data, conf) {
   let params = {}
   Object.assign(params, {
-    appid: conf.appid,
+    appid: data.appid,
     mch_id: conf.mch_id,
     notify_url: conf.notify_url,
     nonce_str: `${Math.random()}`.substr(2, 32)
@@ -32,6 +34,7 @@ async function createOrder (data, conf) {
 
   let sign = wxSign(params, conf.mch_key)
   params.sign = sign
+  params = _.omitBy(params, v => _.isNil(v)) // 为微信过滤空值
 
   let xml = xmlJs.toXml('xml', params)
   let res = await fetch(`${baseUrl}/unifiedorder`, {

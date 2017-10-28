@@ -12,4 +12,4 @@ db.defaults({
 })
 .write()
 
-exports.db = db
+module.exports = db
