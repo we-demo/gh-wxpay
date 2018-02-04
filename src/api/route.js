@@ -6,13 +6,16 @@ module.exports = router => {
 
   // logger
   router.use(async (ctx, next) => {
-    const start = Date.now()
-    await next()
-    const ms = Date.now() - start
-    console.log(`${ctx.method} ${ctx.url} - ${ms}ms`)
+    const start = new Date()
+    console.log(`${ctx.method} ${ctx.url} - ${start.toJSON()}`)
+    try {
+      await next()
+    } finally {
+      const ms = Date.now() - start.getTime()
+      console.log(`${ctx.method} ${ctx.url} - ${ms}ms`)
+    }
   })
 
-  require('./cors')(router)
   require('../gh-auth/route')(router, conf.gh)
   require('../wxpay/route')(router, conf.wx)
 }

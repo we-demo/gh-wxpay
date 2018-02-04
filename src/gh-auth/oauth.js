@@ -4,7 +4,7 @@ function getOauthUrl (from, conf) {
   let url = 'https://github.com/login/oauth/authorize'
   let params = {
     client_id: conf.client_id,
-    redirect_uri: `?target=${encodeURIComponent(from)}`
+    redirect_uri: `${conf.callback_url}?target=${encodeURIComponent(from)}`
   }
   url += getQueryStr(params)
   return url

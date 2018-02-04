@@ -1,6 +1,21 @@
-.user-tab .view-tab {
+.user-bar .view-tab {
   display: none;
 }
-.user-tab .view-tab.active {
+.user-bar .view-tab.active {
   display: block;
+}
+
+.user-avatar {
+  width: 2rem;
+  vertical-align: middle;
+  display: inline-block;
+  border-radius: 100%;
+}
+.user-title {
+  display: inline-block;
+  vertical-align: middle;
+  margin-left: .5rem;
+}
+.logout-btn {
+  margin-left: 1rem;
 }
