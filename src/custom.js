@@ -1,3 +1,4 @@
+let shortid = require('shortid')
 let _ = require('lodash')
 let db = require('./db')
 
@@ -13,6 +14,10 @@ async function handleOrder (ctx, conf) {
   if (!user_id || !product_id) {
     return ctx.throw(400, '缺少参数')
   }
+  // let { to_topic, product_id } = ctx.query
+  // if (!to_topic || !product_id) {
+  //   return ctx.throw(400, '缺少参数')
+  // }
 
   let product = db.get('products').find({ id: product_id }).value()
   if (!product) {
@@ -29,8 +34,9 @@ async function handleOrder (ctx, conf) {
 
   let date_str = new Date().toJSON().replace(/[\-:]|T.*/g, '') // 注 世界标准时间
   var params = {
-    // github账号允许`-` 但不允许`--` 选作订单号分隔符
-    out_trade_no: `${date_str}--${user_id}--${product_id}`,
+    // [ 模块store ] 微信支付，out_trade_no参数长度有误
+    // https://community.apicloud.com/bbs/thread-87911-1-1.html
+    out_trade_no: `${datestr}|${shortid()}`,
     product_id,
     body: product.body,
     attach: product.attach,
@@ -57,9 +63,11 @@ async function handlePay (res) {
   let record = {}
   record.pay_res = res
 
-   // github账号允许`-` 但不允许`--` 选作订单号分隔符
+  // github账号允许`-` 但不允许`--` 选作订单号分隔符
   let [date_str, user_id, product_id] = res.out_trade_no.split('--')
   _.assign(record, { date_str, user_id, product_id })
+  // let [date_str, to_topic, product_id] = res.out_trade_no.split('--')
+  // _.assign(record, { date_str, to_topic, product_id })
 
   if (res.result_code !== 'SUCCESS') {
     // noop
