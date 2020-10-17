@@ -14,7 +14,7 @@
     "koa-session": "^5.5.0",
     "lodash": "^4.17.4",
     "lowdb": "^1.0.0",
-    "node-fetch": "^1.7.3",
+    "node-fetch": "^2.6.1",
     "raw-body": "^2.3.2",
     "shortid": "^2.2.14",
     "xml2json": "^0.11.0"
