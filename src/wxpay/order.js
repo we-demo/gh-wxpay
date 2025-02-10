@@ -42,10 +42,10 @@ async function createOrder (data, conf) {
     body: xml
   })
   res = await res.text()
-  res = xmlJs.toJs(res).xml
+  res = xmlJs.toJs(res)
 
   let expected = wxSign(res, conf.mch_key)
-  if (res.sign !== expected) {
+  if (res.sign && res.sign !== expected) {
     let err = new Error('签名验证不通过 非法访问')
     err.code = 'WXERR_INVALID_SIGN'
     err.status = 400

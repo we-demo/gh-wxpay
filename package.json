@@ -6,6 +6,7 @@
     "start": "node ."
   },
   "dependencies": {
+    "fast-xml-parser": "^4.5.1",
     "form-data": "^2.3.1",
     "js2xmlparser": "^3.0.0",
     "koa": "^2.3.0",
@@ -16,7 +17,6 @@
     "lowdb": "^1.0.0",
     "node-fetch": "^2.6.1",
     "raw-body": "^2.3.2",
-    "shortid": "^2.2.14",
-    "xml2json": "^0.11.0"
+    "shortid": "^2.2.14"
   }
 }

@@ -36,7 +36,7 @@ async function handleOrder (ctx, conf) {
   var params = {
     // [ 模块store ] 微信支付，out_trade_no参数长度有误
     // https://community.apicloud.com/bbs/thread-87911-1-1.html
-    out_trade_no: `${datestr}|${shortid()}`,
+    out_trade_no: `${date_str}|${shortid()}`,
     product_id,
     body: product.body,
     attach: product.attach,

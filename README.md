@@ -89,6 +89,9 @@ module.exports = {
 
 ### 参考资料
 
+- [功能限制记录/违约记录处理 - 商户管理记录](https://pay.weixin.qq.com/xdc/mchviolationsystem/index.php/xphp/cmchviolation/index#/)
+- [微信支付申请开通 - 账户中心](https://pay.weixin.qq.com/index.php/core/apply_progress)
+- [API安全 - 账户中心](https://pay.weixin.qq.com/index.php/core/cert/api_cert#/)
 - [API列表 - 微信支付平台](https://pay.weixin.qq.com/wiki/doc/api/native.php?chapter=9_1)
 - [wx.requestPayment - 微信公众平台 | 小程序](https://mp.weixin.qq.com/debug/wxadoc/dev/api/api-pay.html#wxrequestpaymentobject)
 - [网站应用微信登录开发指南 - 微信开放平台](https://open.weixin.qq.com/cgi-bin/showdocument?action=dir_list&t=resource/res_list&verify=1&id=open1419316505&token=&lang=zh_CN)

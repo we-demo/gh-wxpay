@@ -52,7 +52,7 @@ module.exports = (router, conf) => {
       const length = ctx.get('content-length')
       let xmlBuf = await raw(ctx.req, { length })
       let xml = xmlBuf.toString()
-      let res = xmlJs.toJs(xml).xml
+      let res = xmlJs.toJs(xml)
       console.log('xml res', res)
 
       let expected = wxSign(res, conf.mch_key)

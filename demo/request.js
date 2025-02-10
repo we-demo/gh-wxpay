@@ -4,7 +4,17 @@
 function request (opts) {
   return new Promise((resolve, reject) => {
     let xhr = new XMLHttpRequest()
-    xhr.open(opts.method, opts.url)
+    let url = opts.url
+    let params = opts.query
+    // We'll need to stringify if we've been given an object
+    // If we have a string, this is skipped.
+    if (params && typeof params === 'object') {
+      params = Object.keys(params).map(key => {
+        return encodeURIComponent(key) + '=' + encodeURIComponent(params[key])
+      }).join('&')
+    }
+    if (params) url += '?' + params
+    xhr.open(opts.method || 'GET', url)
     xhr.onload = () => {
       if (xhr.status >= 200 && xhr.status < 300) {
         resolve(xhr.response)
@@ -26,14 +36,6 @@ function request (opts) {
         xhr.setRequestHeader(key, opts.headers[key])
       })
     }
-    let params = opts.params
-    // We'll need to stringify if we've been given an object
-    // If we have a string, this is skipped.
-    if (params && typeof params === 'object') {
-      params = Object.keys(params).map(key => {
-        return encodeURIComponent(key) + '=' + encodeURIComponent(params[key])
-      }).join('&')
-    }
-    xhr.send(params)
+    xhr.send(opts.body || null)
   })
 }
