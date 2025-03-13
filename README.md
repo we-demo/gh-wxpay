@@ -4,6 +4,12 @@
 
 要求：前端页面、node后端、注册一个github-oauth应用、一个开通微信支付的公众号及商户信息。
 
+### Todo 2025.2.10
+
+- [ ] 下单中是否有必要安全校验user_id和当前session的user一直
+- [x] 修复fxp默认解析数字 导致transaction_id错误变为科学计数法表示 无法通过签名校验 包括mch_id/time_end字段
+- [x] fix + 移除node-expat 兼容ubuntu20
+
 ### 发起github登录
 
 ```js
@@ -55,6 +61,22 @@ let { error, prepay_id } = await request({
 })
 ```
 
+### APP发起微信支付
+
+```js
+// 假设语言为JS
+let { error, prepay_id, nonce_str, sign } = await request({
+  url: 'https://example.com/gx/api/order',
+  query: {
+    trade_type: 'APP',
+    openid,
+    product_id,
+    user_id,
+    appid
+  }
+})
+```
+
 ### 配置信息
 
 ```js
@@ -94,7 +116,7 @@ module.exports = {
 - [API安全 - 账户中心](https://pay.weixin.qq.com/index.php/core/cert/api_cert#/)
 - [API列表 - 微信支付平台](https://pay.weixin.qq.com/wiki/doc/api/native.php?chapter=9_1)
 - [wx.requestPayment - 微信公众平台 | 小程序](https://mp.weixin.qq.com/debug/wxadoc/dev/api/api-pay.html#wxrequestpaymentobject)
-- [网站应用微信登录开发指南 - 微信开放平台](https://open.weixin.qq.com/cgi-bin/showdocument?action=dir_list&t=resource/res_list&verify=1&id=open1419316505&token=&lang=zh_CN)
+- ~~[网站应用微信登录开发指南 - 微信开放平台](https://open.weixin.qq.com/cgi-bin/showdocument?action=dir_list&t=resource/res_list&verify=1&id=open1419316505&token=&lang=zh_CN)~~
 - ~~[微信网页授权 - 微信公众平台](https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421140842)~~
 - [教程：教你如何用 React 实现 Github OAuth 验证](http://react-china.org/t/react-github-oauth/4986)
 - [使用 GitHub OAuth 第三方验证登录](https://zhuanlan.zhihu.com/p/26754921)

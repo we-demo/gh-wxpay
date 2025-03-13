@@ -4,8 +4,12 @@ let js2xmlparser = require('js2xmlparser')
 // let xml2json = require('xml2json')
 let { XMLBuilder, XMLParser } = require('fast-xml-parser')
 
-// https://github.com/NaturalIntelligence/fast-xml-parser/blob/master/docs/v5/3.Options.md
-let xmlParser = new XMLParser()
+// https://github.com/NaturalIntelligence/fast-xml-parser/blob/master/docs/v4/2.XMLparseOptions.md
+let xmlParser = new XMLParser({
+  // 修复fxp默认解析数字 导致transaction_id错误变为科学计数法表示
+  // 无法通过签名校验 包括mch_id/time_end字段
+  parseTagValue: false,
+})
 
 exports.toJs = toJs
 exports.toXml = toXml

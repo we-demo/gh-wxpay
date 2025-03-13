@@ -2,5 +2,6 @@ node_modules
 *.log
 yarn.lock
 demo/conf.js
-gx.conf.js
-db.json
+gx.conf*
+!gx.conf.example.js
+db*.json
