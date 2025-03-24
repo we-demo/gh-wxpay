@@ -1,6 +1,7 @@
-let shortid = require('shortid')
 let _ = require('lodash')
 let db = require('./db')
+
+let sepTradeNo = '|'
 
 exports.handleOrder = handleOrder
 exports.handlePay = handlePay
@@ -36,7 +37,7 @@ async function handleOrder (ctx, conf) {
   var params = {
     // [ 模块store ] 微信支付，out_trade_no参数长度有误
     // https://community.apicloud.com/bbs/thread-87911-1-1.html
-    out_trade_no: `${date_str}|${shortid()}`,
+    out_trade_no: [date_str, user_id, product_id].join(sepTradeNo),
     product_id,
     body: product.body,
     attach: product.attach,
@@ -58,15 +59,17 @@ async function handlePay (res) {
   let exists = db.get('orders').find(r => {
     return r.pay_res.out_trade_no === res.out_trade_no
   }).value()
-  if (exists) return
-
+  if (exists) {
+    console.log('order already exists', out_trade_no)
+    return
+  }
   let record = {}
   record.pay_res = res
 
-  // github账号允许`-` 但不允许`--` 选作订单号分隔符
-  let [date_str, user_id, product_id] = res.out_trade_no.split('--')
+  // github账号允许`-` 但不允许`--`或`|` 选作订单号分隔符
+  let [date_str, user_id, product_id] = res.out_trade_no.split(sepTradeNo)
   _.assign(record, { date_str, user_id, product_id })
-  // let [date_str, to_topic, product_id] = res.out_trade_no.split('--')
+  // let [date_str, to_topic, product_id] = res.out_trade_no.split(sepTradeNo)
   // _.assign(record, { date_str, to_topic, product_id })
 
   if (res.result_code !== 'SUCCESS') {

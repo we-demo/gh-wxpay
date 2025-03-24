@@ -16,7 +16,6 @@
     "lodash": "^4.17.4",
     "lowdb": "^1.0.0",
     "node-fetch": "^2.6.1",
-    "raw-body": "^2.3.2",
-    "shortid": "^2.2.14"
+    "raw-body": "^2.3.2"
   }
 }
